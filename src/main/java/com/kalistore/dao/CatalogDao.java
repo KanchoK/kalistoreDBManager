@@ -27,27 +27,7 @@ public class CatalogDao {
             if (conn.isClosed()) {
                 conn = DbConnection.getConnection();
             }
-            PreparedStatement preparedStatement = conn
-                    .prepareStatement("SELECT productId, title, description, price, rating, size, image, daysToMake " +
-                            "FROM products " +
-                            "WHERE productId=?");
-            preparedStatement.setInt(1, productId);
-            rs = preparedStatement.executeQuery();
-            if (rs.next()) {
-                product.setProductId(rs.getInt("productId"));
-                product.setTitle(rs.getString("title"));
-                product.setDescription(rs.getString("description"));
-                product.setPrice(rs.getDouble("price"));
-                product.setRating(rs.getDouble("rating"));
-                product.setSize(rs.getString("size"));
-                product.setImage(rs.getString("image"));
-                product.setDaysToMake(rs.getInt("daysToMake"));
-            }
-
-            product.setCategories(getCategoriesForProduct(productId, rs));
-
-            product.setMaterials(getMaterialsForProduct(productId, rs));
-
+            product = getProductById(productId, rs);
         } catch (SQLException e) {
             e.printStackTrace();
         } finally {
@@ -72,21 +52,7 @@ public class CatalogDao {
             rs = statement.executeQuery("SELECT productId, title, description, price, rating, size, image, daysToMake " +
                     "FROM products");
             while (rs.next()) {
-                Product product = new Product();
-                int productId = rs.getInt("productId");
-
-                product.setProductId(productId);
-                product.setTitle(rs.getString("title"));
-                product.setDescription(rs.getString("description"));
-                product.setPrice(rs.getDouble("price"));
-                product.setRating(rs.getDouble("rating"));
-                product.setSize(rs.getString("size"));
-                product.setImage(rs.getString("image"));
-                product.setDaysToMake(rs.getInt("daysToMake"));
-                product.setCategories(getCategoriesForProduct(productId, rs));
-                product.setMaterials(getMaterialsForProduct(productId, rs));
-
-                products.add(product);
+                products.add(buildProductFromResultSet(rs));
             }
         } catch (SQLException e) {
             e.printStackTrace();
@@ -100,13 +66,59 @@ public class CatalogDao {
         return products;
     }
 
-    public List<Product> findProductsByQuery(String query) {
+    public List<Product> findProductsByQuery(String query) throws SQLException {
         List<Product> products = new ArrayList<Product>();
+        ResultSet rs = null;
+
+        try {
+            if (conn.isClosed()) {
+                conn = DbConnection.getConnection();
+            }
+            PreparedStatement preparedStatement = conn.prepareStatement("SELECT productId, title, description, price, rating, size, image, daysToMake " +
+                    "FROM products " +
+                    "WHERE LOWER(title) LIKE ?");
+            preparedStatement.setString(1, "%" + query.toLowerCase() + "%");
+            rs = preparedStatement.executeQuery();
+            while (rs.next()) {
+                products.add(buildProductFromResultSet(rs));
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            if (rs != null) {
+                rs.close();
+            }
+            DbConnection.closeConnection();
+        }
+
         return products;
     }
 
-    public List<Product> findProductsByCategory(String category) {
+    public List<Product> findProductsByCategory(int categoryId) throws SQLException {
         List<Product> products = new ArrayList<Product>();
+        ResultSet rs = null;
+
+        try {
+            if (conn.isClosed()) {
+                conn = DbConnection.getConnection();
+            }
+            PreparedStatement preparedStatement = conn.prepareStatement("SELECT categoryId, productId " +
+                    "FROM products2categories " +
+                    "WHERE categoryId=?");
+            preparedStatement.setInt(1, categoryId);
+            rs = preparedStatement.executeQuery();
+            while (rs.next()) {
+                products.add(getProductById(rs.getInt("productId"), rs));
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            if (rs != null) {
+                rs.close();
+            }
+            DbConnection.closeConnection();
+        }
+
         return products;
     }
 
@@ -144,5 +156,48 @@ public class CatalogDao {
             materials.add(material);
         }
         return materials;
+    }
+
+    private Product buildProductFromResultSet(ResultSet rs) throws SQLException {
+        Product product = new Product();
+        int productId = rs.getInt("productId");
+
+        product.setProductId(productId);
+        product.setTitle(rs.getString("title"));
+        product.setDescription(rs.getString("description"));
+        product.setPrice(rs.getDouble("price"));
+        product.setRating(rs.getDouble("rating"));
+        product.setSize(rs.getString("size"));
+        product.setImage(rs.getString("image"));
+        product.setDaysToMake(rs.getInt("daysToMake"));
+        product.setCategories(getCategoriesForProduct(productId, rs));
+        product.setMaterials(getMaterialsForProduct(productId, rs));
+
+        return product;
+    }
+
+    private Product getProductById(int productId, ResultSet rs) throws SQLException {
+        Product product = new Product();
+
+        PreparedStatement preparedStatement = conn
+                .prepareStatement("SELECT productId, title, description, price, rating, size, image, daysToMake " +
+                        "FROM products " +
+                        "WHERE productId=?");
+        preparedStatement.setInt(1, productId);
+        rs = preparedStatement.executeQuery();
+        if (rs.next()) {
+            product.setProductId(productId);
+            product.setTitle(rs.getString("title"));
+            product.setDescription(rs.getString("description"));
+            product.setPrice(rs.getDouble("price"));
+            product.setRating(rs.getDouble("rating"));
+            product.setSize(rs.getString("size"));
+            product.setImage(rs.getString("image"));
+            product.setDaysToMake(rs.getInt("daysToMake"));
+            product.setCategories(getCategoriesForProduct(productId, rs));
+            product.setMaterials(getMaterialsForProduct(productId, rs));
+        }
+
+        return product;
     }
 }

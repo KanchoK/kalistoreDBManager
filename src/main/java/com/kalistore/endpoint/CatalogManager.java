@@ -37,4 +37,19 @@ public class CatalogManager {
         return catalogDao.getAllProducts();
     }
 
+    @GET
+    @Path("productsByQuery")
+    @Produces(MediaType.APPLICATION_JSON + ";charset=UTF-8")
+    public List<Product> getProductsByQuery(@QueryParam("query") String query) throws SQLException {
+        CatalogDao catalogDao = new CatalogDao();
+        return catalogDao.findProductsByQuery(query);
+    }
+
+    @GET
+    @Path("productsByCategory")
+    @Produces(MediaType.APPLICATION_JSON + ";charset=UTF-8")
+    public List<Product> getProductsByQuery(@QueryParam("categoryId") int categoryId) throws SQLException {
+        CatalogDao catalogDao = new CatalogDao();
+        return catalogDao.findProductsByCategory(categoryId);
+    }
 }

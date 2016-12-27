@@ -24,9 +24,12 @@ public class UserDao {
                 conn = DbConnection.getConnection();
             }
             PreparedStatement preparedStatement = conn
-                    .prepareStatement("insert into users(email,password) values (?, ?)");
-            preparedStatement.setString(1, user.getEmail());
+                    .prepareStatement("insert into users(username,password, fullName, email, phone) values (?, ?, ?, ?, ?)");
+            preparedStatement.setString(1, user.getUsername());
             preparedStatement.setString(2, user.getPassword());
+            preparedStatement.setString(3, user.getFullName());
+            preparedStatement.setString(4, user.getEmail());
+            preparedStatement.setString(5, user.getPhone());
             preparedStatement.executeUpdate();
         } catch (SQLException e) {
             e.printStackTrace();

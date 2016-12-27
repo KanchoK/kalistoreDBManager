@@ -1,7 +1,6 @@
 package com.kalistore.model;
 
 import javax.xml.bind.annotation.XmlRootElement;
-import javax.xml.rpc.holders.BooleanHolder;
 
 /**
  * Created by kanch on 12/9/2016.
@@ -14,7 +13,6 @@ public class User {
     private String fullName;
     private String email;
     private String phone;
-    private Boolean isBlocked;
 
     public String getUserId() {
         return userId;
@@ -62,13 +60,5 @@ public class User {
 
     public void setPhone(String phone) {
         this.phone = phone;
-    }
-
-    public Boolean getBlocked() {
-        return isBlocked;
-    }
-
-    public void setBlocked(Boolean blocked) {
-        isBlocked = blocked;
     }
 }

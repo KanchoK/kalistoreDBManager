@@ -28,6 +28,7 @@ CREATE TABLE `addresses` (
   `zipCode` varchar(10) DEFAULT NULL,
   `addressLine` varchar(100) DEFAULT NULL,
   `userId` int(11) DEFAULT NULL,
+  `mainAddress` int(11) DEFAULT '0',
   PRIMARY KEY (`addressId`)
 ) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -38,7 +39,7 @@ CREATE TABLE `addresses` (
 
 LOCK TABLES `addresses` WRITE;
 /*!40000 ALTER TABLE `addresses` DISABLE KEYS */;
-INSERT INTO `addresses` VALUES (1,1,'1000','ул. Пършевица 5',5),(2,2,'4000','ул. Ала Бала 5',6),(3,2,'4000','ул. Някоя си 72',5);
+INSERT INTO `addresses` VALUES (1,1,'1000','ул. Пършевица 5',5,1),(2,2,'4000','ул. Ала Бала 5',6,1),(3,2,'4000','ул. Някоя си 72',5,0);
 /*!40000 ALTER TABLE `addresses` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -103,7 +104,7 @@ CREATE TABLE `clients` (
   `phone` varchar(45) DEFAULT NULL,
   `userId` int(11) DEFAULT NULL,
   PRIMARY KEY (`clientId`)
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=15 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -125,10 +126,12 @@ DROP TABLE IF EXISTS `deliveries`;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `deliveries` (
   `deliveryId` int(11) NOT NULL AUTO_INCREMENT,
-  `addressId` int(11) DEFAULT NULL,
+  `deliveryAddressId` int(11) DEFAULT NULL,
   `clientId` int(11) DEFAULT NULL,
+  `isToOffice` int(11) NOT NULL DEFAULT '0',
+  `differentAddress` int(11) NOT NULL DEFAULT '0',
   PRIMARY KEY (`deliveryId`)
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=9 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -137,7 +140,7 @@ CREATE TABLE `deliveries` (
 
 LOCK TABLES `deliveries` WRITE;
 /*!40000 ALTER TABLE `deliveries` DISABLE KEYS */;
-INSERT INTO `deliveries` VALUES (1,3,1);
+INSERT INTO `deliveries` VALUES (1,3,1,0,0);
 /*!40000 ALTER TABLE `deliveries` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -175,6 +178,7 @@ DROP TABLE IF EXISTS `offices`;
 CREATE TABLE `offices` (
   `officeId` int(11) NOT NULL AUTO_INCREMENT,
   `name` varchar(145) DEFAULT NULL,
+  `cityId` int(11) DEFAULT NULL,
   PRIMARY KEY (`officeId`)
 ) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -185,32 +189,33 @@ CREATE TABLE `offices` (
 
 LOCK TABLES `offices` WRITE;
 /*!40000 ALTER TABLE `offices` DISABLE KEYS */;
-INSERT INTO `offices` VALUES (1,'Econt офис 1'),(2,'Econt офис 2'),(3,'Econt офис 3'),(4,'Speedy офис 1'),(5,'Speedy офис 2');
+INSERT INTO `offices` VALUES (1,'Econt офис 1',1),(2,'Econt офис 2',2),(3,'Econt офис 3',1),(4,'Speedy офис 1',1),(5,'Speedy офис 2',2);
 /*!40000 ALTER TABLE `offices` ENABLE KEYS */;
 UNLOCK TABLES;
 
 --
--- Table structure for table `order2products`
+-- Table structure for table `orderentries`
 --
 
-DROP TABLE IF EXISTS `order2products`;
+DROP TABLE IF EXISTS `orderentries`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `order2products` (
+CREATE TABLE `orderentries` (
   `orderId` int(11) NOT NULL,
   `productId` int(11) NOT NULL,
+  `quantity` int(11) DEFAULT NULL,
   PRIMARY KEY (`orderId`,`productId`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Dumping data for table `order2products`
+-- Dumping data for table `orderentries`
 --
 
-LOCK TABLES `order2products` WRITE;
-/*!40000 ALTER TABLE `order2products` DISABLE KEYS */;
-INSERT INTO `order2products` VALUES (1,1),(1,3),(2,5);
-/*!40000 ALTER TABLE `order2products` ENABLE KEYS */;
+LOCK TABLES `orderentries` WRITE;
+/*!40000 ALTER TABLE `orderentries` DISABLE KEYS */;
+INSERT INTO `orderentries` VALUES (1,1,2),(1,3,1),(2,5,1);
+/*!40000 ALTER TABLE `orderentries` ENABLE KEYS */;
 UNLOCK TABLES;
 
 --
@@ -227,7 +232,7 @@ CREATE TABLE `orders` (
   `userId` int(11) NOT NULL,
   `status` int(11) DEFAULT NULL,
   PRIMARY KEY (`orderId`)
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=10 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -327,13 +332,14 @@ DROP TABLE IF EXISTS `users`;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `users` (
   `userId` int(11) NOT NULL AUTO_INCREMENT,
-  `username` varchar(45) DEFAULT NULL,
-  `password` varchar(70) DEFAULT NULL,
+  `username` varchar(45) NOT NULL,
+  `password` varchar(70) NOT NULL,
   `fullName` varchar(45) DEFAULT NULL,
   `email` varchar(45) DEFAULT NULL,
   `phone` varchar(45) DEFAULT NULL,
-  PRIMARY KEY (`userId`)
-) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8;
+  PRIMARY KEY (`userId`),
+  UNIQUE KEY `username_UNIQUE` (`username`)
+) ENGINE=InnoDB AUTO_INCREMENT=13 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -355,4 +361,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2016-12-27 13:46:46
+-- Dump completed on 2016-12-28 16:01:48

@@ -1,5 +1,6 @@
 package com.kalistore.model;
 
+import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 import java.util.List;
 
@@ -19,6 +20,7 @@ public class Product {
     private int daysToMake;
     private List<Category> categories;
 
+    @XmlElement(name = "id")
     public int getProductId() {
         return productId;
     }

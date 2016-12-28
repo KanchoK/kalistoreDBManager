@@ -11,6 +11,8 @@ import java.io.IOException;
 @WebFilter("/*")
 public class CorsFilter implements Filter {
 
+//    http://stackoverflow.com/questions/24386712/tomcat-cors-filter
+
     @Override
     public void init(FilterConfig filterConfig) throws ServletException {
 

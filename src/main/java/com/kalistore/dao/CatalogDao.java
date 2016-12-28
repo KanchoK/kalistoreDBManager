@@ -41,7 +41,7 @@ public class CatalogDao {
     }
 
     public List<Product> getAllProducts() throws SQLException {
-        List<Product> products = new ArrayList<Product>();
+        List<Product> products = new ArrayList<>();
         ResultSet rs = null;
 
         try {
@@ -67,7 +67,7 @@ public class CatalogDao {
     }
 
     public List<Product> findProductsByQuery(String query) throws SQLException {
-        List<Product> products = new ArrayList<Product>();
+        List<Product> products = new ArrayList<>();
         ResultSet rs = null;
 
         try {
@@ -95,7 +95,7 @@ public class CatalogDao {
     }
 
     public List<Product> findProductsByCategory(int categoryId) throws SQLException {
-        List<Product> products = new ArrayList<Product>();
+        List<Product> products = new ArrayList<>();
         ResultSet rs = null;
 
         try {
@@ -130,7 +130,7 @@ public class CatalogDao {
                         "WHERE p2c.productId=?");
         preparedStatement.setInt(1, productId);
         rs = preparedStatement.executeQuery();
-        List<Category> categories = new ArrayList<Category>();
+        List<Category> categories = new ArrayList<>();
         while (rs.next()) {
             Category category = new Category();
             category.setCategoryId(rs.getInt("categoryId"));
@@ -148,7 +148,7 @@ public class CatalogDao {
                         "WHERE p2m.productId=?");
         preparedStatement.setInt(1, productId);
         rs = preparedStatement.executeQuery();
-        List<Material> materials = new ArrayList<Material>();
+        List<Material> materials = new ArrayList<>();
         while (rs.next()) {
             Material material = new Material();
             material.setMaterialId(rs.getInt("materialId"));

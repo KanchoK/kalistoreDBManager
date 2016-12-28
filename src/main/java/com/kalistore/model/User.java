@@ -1,24 +1,30 @@
 package com.kalistore.model;
 
+import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
+import java.util.List;
 
 /**
  * Created by kanch on 12/9/2016.
  */
 @XmlRootElement
 public class User {
-    private String userId;
+    private int userId;
     private String username;
     private String password;
     private String fullName;
     private String email;
     private String phone;
+    private List<Order> orders;
+    private List<Address> addresses;
+    private Address mainAddress;
 
-    public String getUserId() {
+    @XmlElement(name = "id")
+    public int getUserId() {
         return userId;
     }
 
-    public void setUserId(String userId) {
+    public void setUserId(int userId) {
         this.userId = userId;
     }
 
@@ -60,5 +66,29 @@ public class User {
 
     public void setPhone(String phone) {
         this.phone = phone;
+    }
+
+    public List<Order> getOrders() {
+        return orders;
+    }
+
+    public void setOrders(List<Order> orders) {
+        this.orders = orders;
+    }
+
+    public List<Address> getAddresses() {
+        return addresses;
+    }
+
+    public void setAddresses(List<Address> addresses) {
+        this.addresses = addresses;
+    }
+
+    public Address getMainAddress() {
+        return mainAddress;
+    }
+
+    public void setMainAddress(Address mainAddress) {
+        this.mainAddress = mainAddress;
     }
 }

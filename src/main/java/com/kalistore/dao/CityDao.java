@@ -3,10 +3,7 @@ package com.kalistore.dao;
 import com.kalistore.model.City;
 import com.kalistore.utils.DbConnection;
 
-import java.sql.Connection;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
+import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -47,5 +44,20 @@ public class CityDao {
         }
 
         return cities;
+    }
+
+    public static City findCityForId(int cityId, ResultSet rs, Connection connection) throws SQLException {
+        PreparedStatement preparedStatement = connection
+                .prepareStatement("SELECT name " +
+                        "FROM cities " +
+                        "WHERE cityId=?");
+        preparedStatement.setInt(1, cityId);
+        rs = preparedStatement.executeQuery();
+        City city = new City();
+        while (rs.next()) {
+            city.setCityId(cityId);
+            city.setName(rs.getString("name"));
+        }
+        return city;
     }
 }

@@ -7,14 +7,13 @@ import com.kalistore.utils.SecurityUtils;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
-import javax.ws.rs.Consumes;
-import javax.ws.rs.POST;
-import javax.ws.rs.Path;
+import javax.ws.rs.*;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import java.net.HttpURLConnection;
 import java.net.URI;
+import java.sql.SQLException;
 
 /**
  * Created by kanch on 12/9/2016.
@@ -37,20 +36,21 @@ public class UserManager {
     @POST
     @Path("login")
     @Consumes(MediaType.APPLICATION_JSON)
-    public Response login(User user) {
+    public Response login(User user) throws SQLException {
+        user.setPassword(SecurityUtils.getHashedPassword(user.getPassword()));
+        UserDao userDao = new UserDao();
+        int userId = userDao.validation(user);
+        if (userId != -1) {
+            return Response.status(HttpURLConnection.HTTP_OK).entity(userId).build();
+        }
         return Response.status(HttpURLConnection.HTTP_UNAUTHORIZED).build();
     }
 
-    @POST
-    @Path("logout")
-    @Consumes(MediaType.APPLICATION_JSON)
-    public Response logout() {
-        HttpSession session = request.getSession(false);
-        if (session != null) {
-            session.invalidate();
-        }
-        return Response.seeOther(URI.create("http://localhost:8080/")).build();
+    @GET
+    @Path("info")
+    @Produces(MediaType.APPLICATION_JSON + ";charset=UTF-8")
+    public User getUserInfo(@QueryParam("userId") int userId) throws SQLException {
+        UserDao userDao = new UserDao();
+        return userDao.getUserInfo(userId);
     }
-
-
 }

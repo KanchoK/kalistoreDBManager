@@ -1,6 +1,7 @@
 package com.kalistore.model;
 
 import javax.persistence.*;
+import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 import java.util.List;
 
@@ -13,6 +14,7 @@ public class Category {
     private String name;
 //    private List<Product> products;
 
+    @XmlElement(name = "id")
     public int getCategoryId() {
         return categoryId;
     }

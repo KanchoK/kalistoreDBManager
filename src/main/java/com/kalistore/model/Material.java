@@ -1,5 +1,6 @@
 package com.kalistore.model;
 
+import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 
 /**
@@ -10,6 +11,7 @@ public class Material {
     private int materialId;
     private String name;
 
+    @XmlElement(name = "id")
     public int getMaterialId() {
         return materialId;
     }

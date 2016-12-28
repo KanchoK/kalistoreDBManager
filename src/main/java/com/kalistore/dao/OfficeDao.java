@@ -29,11 +29,12 @@ public class OfficeDao {
                 conn = DbConnection.getConnection();
             }
             Statement statement = conn.createStatement();
-            rs = statement.executeQuery("SELECT officeId, name FROM offices");
+            rs = statement.executeQuery("SELECT officeId, name, cityId FROM offices");
             while (rs.next()) {
                 Office office = new Office();
                 office.setOfficeId(rs.getInt("officeId"));
                 office.setName(rs.getString("name"));
+                office.setCity(CityDao.findCityForId(rs.getInt("cityId"), rs, conn));
 
                 offices.add(office);
             }

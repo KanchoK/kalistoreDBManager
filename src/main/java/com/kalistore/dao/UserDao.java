@@ -76,12 +76,14 @@ public class UserDao {
                 conn = DbConnection.getConnection();
             }
             PreparedStatement preparedStatement = conn
-                    .prepareStatement("SELECT fullName, email, phone " +
+                    .prepareStatement("SELECT userId, username, fullName, email, phone " +
                             "FROM users " +
                             "WHERE userId=?");
             preparedStatement.setInt(1, userId);
             rs = preparedStatement.executeQuery();
             if (rs.next()) {
+                user.setUserId(rs.getInt("userId"));
+                user.setUsername(rs.getString("username"));
                 user.setFullName(rs.getString("fullName"));
                 user.setEmail(rs.getString("email"));
                 user.setPhone(rs.getString("phone"));

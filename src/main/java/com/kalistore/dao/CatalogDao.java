@@ -200,4 +200,60 @@ public class CatalogDao {
 
         return product;
     }
+
+    public List<Product> getProductsByIds(List<Integer> productIds) throws SQLException {
+        ResultSet rs = null;
+        List<Product> products = new ArrayList<>();
+
+        try {
+            if (conn.isClosed()) {
+                conn = DbConnection.getConnection();
+            }
+
+            StringBuilder idList = new StringBuilder();
+            for (int id : productIds) {
+                if (idList.length() > 0) {
+                    idList.append(",");
+                }
+                idList.append("?");
+            }
+
+            PreparedStatement preparedStatement = conn
+                    .prepareStatement("SELECT productId, title, description, price, rating, size, image, daysToMake " +
+                            "FROM products " +
+                            "WHERE productId IN (" + idList + ")");
+            for (int i = 0; i < productIds.size(); i++) {
+                preparedStatement.setInt(i + 1, productIds.get(i));
+            }
+            rs = preparedStatement.executeQuery();
+            for (int i = 0; i < productIds.size(); i++) {
+                if (!rs.next()) {
+                    break;
+                }
+
+                Product product = new Product();
+                product.setProductId(rs.getInt("productId"));
+                product.setTitle(rs.getString("title"));
+                product.setDescription(rs.getString("description"));
+                product.setPrice(rs.getDouble("price"));
+                product.setRating(rs.getDouble("rating"));
+                product.setSize(rs.getString("size"));
+                product.setImage(rs.getString("image"));
+                product.setDaysToMake(rs.getInt("daysToMake"));
+                product.setCategories(getCategoriesForProduct(product.getProductId(), rs));
+                product.setMaterials(getMaterialsForProduct(product.getProductId(), rs));
+
+                products.add(product);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            if (rs != null) {
+                rs.close();
+            }
+            DbConnection.closeConnection();
+        }
+
+        return products;
+    }
 }

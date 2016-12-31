@@ -30,10 +30,18 @@ public class CatalogManager {
     }
 
     @GET
+    @Path("productsByIds")
+    @Produces(MediaType.APPLICATION_JSON + ";charset=UTF-8")
+    public List<Product> getProductsByQuery(@QueryParam("productIds") List<Integer> productIds) throws SQLException {
+        CatalogDao catalogDao = new CatalogDao();
+        return catalogDao.getProductsByIds(productIds);
+    }
+
+    @GET
     @Path("allProducts")
     @Produces(MediaType.APPLICATION_JSON + ";charset=UTF-8")
     public List<Product> getAllProducts() throws SQLException {
-       CatalogDao catalogDao = new CatalogDao();
+        CatalogDao catalogDao = new CatalogDao();
         return catalogDao.getAllProducts();
     }
 

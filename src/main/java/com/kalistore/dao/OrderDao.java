@@ -143,4 +143,222 @@ public class OrderDao {
             DbConnection.closeConnection();
         }
     }
+
+    public List<Order> findOrdersForUser(int userId) throws SQLException {
+        List<Order> orders = new ArrayList<>();
+        ResultSet rs = null;
+
+        try {
+            if (conn.isClosed()) {
+                conn = DbConnection.getConnection();
+            }
+
+            PreparedStatement getOrders = conn.prepareStatement("SELECT orderId, deliveryId, totalPrice, status " +
+                    "FROM orders " +
+                    "WHERE userId=?");
+            getOrders.setInt(1, userId);
+            rs = getOrders.executeQuery();
+            while (rs.next()) {
+                Order order = new Order();
+
+                order.setOrderId(rs.getInt("orderId"));
+                order.setTotalPrice(rs.getDouble("totalPrice"));
+                order.setStatus(rs.getInt("status"));
+                order.setEntries(getEntriesForOrder(order.getOrderId()));
+                order.setDelivery(getDeliveryForOrder(rs.getInt("deliveryId")));
+
+                orders.add(order);
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            if (rs != null) {
+                rs.close();
+            }
+            DbConnection.closeConnection();
+        }
+
+        return orders;
+    }
+
+    private List<OrderEntry> getEntriesForOrder(int orderId) throws SQLException {
+        List<OrderEntry> entries = new ArrayList<>();
+        ResultSet rs = null;
+
+        try {
+            PreparedStatement getEntries = conn
+                    .prepareStatement("SELECT productId, quantity " +
+                            "FROM orderentries " +
+                            "WHERE orderId=?");
+            getEntries.setInt(1, orderId);
+            rs = getEntries.executeQuery();
+            while (rs.next()) {
+                OrderEntry entry = new OrderEntry();
+
+                entry.setOrderId(orderId);
+                entry.setQuantity(rs.getInt("quantity"));
+                entry.setProduct(getProductForEntry(rs.getInt("productId")));
+
+                entries.add(entry);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            if (rs != null) {
+                rs.close();
+            }
+        }
+
+        return entries;
+    }
+
+    private Product getProductForEntry(int productId) throws SQLException {
+        Product product = new Product();
+        ResultSet rs = null;
+
+        try {
+            PreparedStatement getProduct = conn
+                    .prepareStatement("SELECT title, price " +
+                            "FROM products " +
+                            "WHERE productId=?");
+            getProduct.setInt(1, productId);
+            rs = getProduct.executeQuery();
+            if (rs.next()) {
+                product.setProductId(productId);
+                product.setTitle(rs.getString("title"));
+                product.setPrice(rs.getDouble("price"));
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            if (rs != null) {
+                rs.close();
+            }
+        }
+
+        return product;
+    }
+
+    private Delivery getDeliveryForOrder(int deliveryId) throws SQLException {
+        Delivery delivery = new Delivery();
+        ResultSet rs = null;
+
+        try {
+            PreparedStatement getDelivery = conn
+                    .prepareStatement("SELECT deliveryAddressId, clientId, isToOffice, differentAddress " +
+                            "FROM deliveries " +
+                            "WHERE deliveryId=?");
+            getDelivery.setInt(1, deliveryId);
+            rs = getDelivery.executeQuery();
+            if (rs.next()) {
+                delivery.setDeliveryId(deliveryId);
+                delivery.setAddress(getAddressForDelivery(rs.getInt("isToOffice"), rs.getInt("deliveryAddressId")));
+                delivery.setClient(getClientForDelivery(rs.getInt("clientId")));
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            if (rs != null) {
+                rs.close();
+            }
+        }
+
+        return delivery;
+    }
+
+    private Address getAddressForDelivery(int isToOffice, int deliveryAddressId) throws SQLException {
+        Address address = new Address();
+        ResultSet rs = null;
+
+        try {
+            PreparedStatement getAddress = null;
+
+            if (isToOffice == 1) {
+                getAddress = conn
+                        .prepareStatement("SELECT name, cityId " +
+                                "FROM offices " +
+                                "WHERE officeId=?");
+                getAddress.setInt(1, deliveryAddressId);
+                rs = getAddress.executeQuery();
+                if (rs.next()) {
+                    address.setAddressLine(rs.getString("name"));
+                    address.setCity(getCityForId(rs.getInt("cityId")));
+                }
+            } else {
+                getAddress = conn
+                        .prepareStatement("SELECT addressLine, cityId " +
+                                "FROM addresses " +
+                                "WHERE addressId=?");
+                getAddress.setInt(1, deliveryAddressId);
+                rs = getAddress.executeQuery();
+                if (rs.next()) {
+                    address.setAddressLine(rs.getString("addressLine"));
+                    address.setCity(getCityForId(rs.getInt("cityId")));
+                }
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            if (rs != null) {
+                rs.close();
+            }
+        }
+
+        return address;
+    }
+
+    private City getCityForId(int cityId) throws SQLException {
+        City city = new City();
+        ResultSet rs = null;
+
+        try {
+            PreparedStatement getCity = conn
+                    .prepareStatement("SELECT name " +
+                            "FROM cities " +
+                            "WHERE cityId=?");
+            getCity.setInt(1, cityId);
+            rs = getCity.executeQuery();
+            if (rs.next()) {
+                city.setCityId(cityId);
+                city.setName(rs.getString("name"));
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            if (rs != null) {
+                rs.close();
+            }
+        }
+
+        return city;
+    }
+
+    private Client getClientForDelivery(int clientId) throws SQLException {
+        Client client = new Client();
+        ResultSet rs = null;
+
+        try {
+            PreparedStatement getProduct = conn
+                    .prepareStatement("SELECT fullName, phone " +
+                            "FROM clients " +
+                            "WHERE clientId=?");
+            getProduct.setInt(1, clientId);
+            rs = getProduct.executeQuery();
+            if (rs.next()) {
+                client.setClientId(clientId);
+                client.setFullName(rs.getString("fullName"));
+                client.setPhone(rs.getString("phone"));
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            if (rs != null) {
+                rs.close();
+            }
+        }
+
+        return client;
+    }
 }

@@ -26,7 +26,7 @@ public class UserManager {
     @POST
     @Path("register")
     @Consumes(MediaType.APPLICATION_JSON)
-    public Response registerUser(User user) {
+    public Response registerUser(User user) throws SQLException {
         UserDao userDao = new UserDao();
         user.setPassword(SecurityUtils.getHashedPassword(user.getPassword()));
         userDao.addUser(user);

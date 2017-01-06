@@ -7,10 +7,7 @@ import com.kalistore.model.Product;
 import com.kalistore.model.User;
 import com.kalistore.utils.DbConnection;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.*;
 
 /**
  * Created by kanch on 5/27/2016.
@@ -22,22 +19,42 @@ public class UserDao {
         conn = DbConnection.getConnection();
     }
 
-    public void addUser(User user) {
+    public void addUser(User user) throws SQLException {
+        ResultSet rs = null;
+
         try {
             if (conn.isClosed()) {
                 conn = DbConnection.getConnection();
             }
+            int userId;
+
             PreparedStatement preparedStatement = conn
-                    .prepareStatement("INSERT INTO users(username,password, fullName, email, phone) VALUES (?, ?, ?, ?, ?)");
+                    .prepareStatement("INSERT INTO users(username, password, fullName, phone) " +
+                            "VALUES (?, ?, ?, ?)", Statement.RETURN_GENERATED_KEYS);
             preparedStatement.setString(1, user.getUsername());
             preparedStatement.setString(2, user.getPassword());
             preparedStatement.setString(3, user.getFullName());
-            preparedStatement.setString(4, user.getEmail());
-            preparedStatement.setString(5, user.getPhone());
+            preparedStatement.setString(4, user.getPhone());
             preparedStatement.executeUpdate();
+
+            rs = preparedStatement.getGeneratedKeys();
+            rs.next();
+            userId = rs.getInt(1);
+
+            if (user.getMainAddress() != null) {
+                preparedStatement = conn
+                        .prepareStatement("INSERT INTO addresses(cityId, addressLine, userId, mainAddress) VALUES (?, ?, ?, 1)");
+                preparedStatement.setInt(1, user.getMainAddress().getCity().getCityId());
+                preparedStatement.setString(2, user.getMainAddress().getAddressLine());
+                preparedStatement.setInt(3, userId);
+                preparedStatement.executeUpdate();
+            }
         } catch (SQLException e) {
             e.printStackTrace();
         } finally {
+            if (rs != null) {
+                rs.close();
+            }
             DbConnection.closeConnection();
         }
     }

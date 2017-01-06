@@ -30,7 +30,7 @@ CREATE TABLE `addresses` (
   `userId` int(11) DEFAULT NULL,
   `mainAddress` int(11) DEFAULT '0',
   PRIMARY KEY (`addressId`)
-) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -39,7 +39,7 @@ CREATE TABLE `addresses` (
 
 LOCK TABLES `addresses` WRITE;
 /*!40000 ALTER TABLE `addresses` DISABLE KEYS */;
-INSERT INTO `addresses` VALUES (1,1,'1000','ул. Пършевица 5',5,1),(2,2,'4000','ул. Ала Бала 5',6,1),(3,2,'4000','ул. Някоя си 72',5,0);
+INSERT INTO `addresses` VALUES (1,1,'1000','ул. Пършевица 5',5,1),(2,2,'4000','ул. Ала Бала 5',6,1),(3,2,'4000','ул. Някоя си 72',5,0),(4,2,NULL,'First Avenue',20,1);
 /*!40000 ALTER TABLE `addresses` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -104,7 +104,7 @@ CREATE TABLE `clients` (
   `phone` varchar(45) DEFAULT NULL,
   `userId` int(11) DEFAULT NULL,
   PRIMARY KEY (`clientId`)
-) ENGINE=InnoDB AUTO_INCREMENT=15 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=20 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -113,7 +113,7 @@ CREATE TABLE `clients` (
 
 LOCK TABLES `clients` WRITE;
 /*!40000 ALTER TABLE `clients` DISABLE KEYS */;
-INSERT INTO `clients` VALUES (1,'Иван Пешев','0988855',5);
+INSERT INTO `clients` VALUES (1,'Иван Пешев','0988855',5),(16,'Иван Иванов','09888335',5);
 /*!40000 ALTER TABLE `clients` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -131,7 +131,7 @@ CREATE TABLE `deliveries` (
   `isToOffice` int(11) NOT NULL DEFAULT '0',
   `differentAddress` int(11) NOT NULL DEFAULT '0',
   PRIMARY KEY (`deliveryId`)
-) ENGINE=InnoDB AUTO_INCREMENT=9 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=21 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -140,7 +140,7 @@ CREATE TABLE `deliveries` (
 
 LOCK TABLES `deliveries` WRITE;
 /*!40000 ALTER TABLE `deliveries` DISABLE KEYS */;
-INSERT INTO `deliveries` VALUES (1,3,1,0,0);
+INSERT INTO `deliveries` VALUES (1,3,1,0,0),(10,3,16,0,1),(11,3,16,0,1),(12,1,16,0,0),(13,3,1,0,1),(14,3,1,0,1),(15,3,1,0,1),(16,3,1,0,1),(17,1,1,0,0),(18,1,1,0,0),(19,0,1,1,0),(20,1,1,1,0);
 /*!40000 ALTER TABLE `deliveries` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -214,7 +214,7 @@ CREATE TABLE `orderentries` (
 
 LOCK TABLES `orderentries` WRITE;
 /*!40000 ALTER TABLE `orderentries` DISABLE KEYS */;
-INSERT INTO `orderentries` VALUES (1,1,2),(1,3,1),(2,5,1);
+INSERT INTO `orderentries` VALUES (1,1,2),(1,3,1),(2,5,1),(11,1,2),(11,3,1),(12,1,2),(12,3,1),(13,1,2),(13,3,1),(14,1,2),(14,3,1),(15,1,2),(15,3,1),(16,1,2),(16,3,1),(17,1,2),(17,3,1),(18,1,2),(18,3,1),(19,1,2),(19,3,1),(20,1,2),(20,3,1),(21,1,2),(21,3,1);
 /*!40000 ALTER TABLE `orderentries` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -232,7 +232,7 @@ CREATE TABLE `orders` (
   `userId` int(11) NOT NULL,
   `status` int(11) DEFAULT NULL,
   PRIMARY KEY (`orderId`)
-) ENGINE=InnoDB AUTO_INCREMENT=10 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=22 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -241,7 +241,7 @@ CREATE TABLE `orders` (
 
 LOCK TABLES `orders` WRITE;
 /*!40000 ALTER TABLE `orders` DISABLE KEYS */;
-INSERT INTO `orders` VALUES (1,1,33.70,5,4),(2,1,11.70,5,3);
+INSERT INTO `orders` VALUES (1,1,33.70,5,4),(2,1,11.70,5,3),(11,10,0.00,5,1),(12,11,33.70,5,1),(13,12,33.70,5,1),(14,13,33.70,5,1),(15,14,33.70,5,1),(16,15,33.70,5,1),(17,16,33.70,5,1),(18,17,33.70,5,1),(19,18,33.70,5,1),(20,19,33.70,5,1),(21,20,33.70,5,1);
 /*!40000 ALTER TABLE `orders` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -324,6 +324,34 @@ INSERT INTO `products2materials` VALUES (1,1),(2,1),(3,1),(3,2),(4,1),(4,3),(4,4
 UNLOCK TABLES;
 
 --
+-- Table structure for table `reviews`
+--
+
+DROP TABLE IF EXISTS `reviews`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `reviews` (
+  `reviewId` int(11) NOT NULL AUTO_INCREMENT,
+  `productId` int(11) DEFAULT NULL,
+  `userId` int(11) DEFAULT NULL,
+  `text` varchar(250) DEFAULT NULL,
+  `rating` int(11) DEFAULT NULL,
+  `creationDate` varchar(45) DEFAULT NULL,
+  PRIMARY KEY (`reviewId`)
+) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `reviews`
+--
+
+LOCK TABLES `reviews` WRITE;
+/*!40000 ALTER TABLE `reviews` DISABLE KEYS */;
+INSERT INTO `reviews` VALUES (1,1,5,'Много красива',5,'02.05.2016 11:23'),(2,1,6,'Искам и аз! Страхотна е!',4,'12.06.2016 12:34'),(3,2,6,'Страхотно качество! Препоръчвам, заслужават си всяка стотинка.',4,'10.06.2016 08:04'),(4,3,5,'Бърза и качествена изработка. Препоръчвам!',4,'12.05.2016 01:02'),(5,4,5,'Много хъбав подарък. Заслужава си парите.',5,'03.01.2017 11:23');
+/*!40000 ALTER TABLE `reviews` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
 -- Table structure for table `users`
 --
 
@@ -339,7 +367,7 @@ CREATE TABLE `users` (
   `phone` varchar(45) DEFAULT NULL,
   PRIMARY KEY (`userId`),
   UNIQUE KEY `username_UNIQUE` (`username`)
-) ENGINE=InnoDB AUTO_INCREMENT=13 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=21 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -348,7 +376,7 @@ CREATE TABLE `users` (
 
 LOCK TABLES `users` WRITE;
 /*!40000 ALTER TABLE `users` DISABLE KEYS */;
-INSERT INTO `users` VALUES (5,'pesho','<™	¯ì%5MU®!Y²n8Õ?!s¸ÓÜ>îL~z±Áë‹…>;çºa;1»\\œ6!MÉñJBýz/Û„…kÊ\\DÂ','Pesho Peshev','pesho@test.com','2873278'),(6,'loshiq','<™	¯ì%5MU®!Y²n8Õ?!s¸ÓÜ>îL~z±Áë‹…>;çºa;1»\\œ6!MÉñJBýz/Û„…kÊ\\DÂ','Losho Loshev','loshiq@test.com','5555555');
+INSERT INTO `users` VALUES (5,'pesho','<™	¯ì%5MU®!Y²n8Õ?!s¸ÓÜ>îL~z±Áë‹…>;çºa;1»\\œ6!MÉñJBýz/Û„…kÊ\\DÂ','Pesho Peshev','pesho@test.com','2873278'),(6,'loshiq','<™	¯ì%5MU®!Y²n8Õ?!s¸ÓÜ>îL~z±Áë‹…>;çºa;1»\\œ6!MÉñJBýz/Û„…kÊ\\DÂ','Losho Loshev','loshiq@test.com','5555555'),(20,'test','<™	¯ì%5MU®!Y²n8Õ?!s¸ÓÜ>îL~z±Áë‹…>;çºa;1»\\œ6!MÉñJBýz/Û„…kÊ\\DÂ','Losho Loshev',NULL,'5555555');
 /*!40000 ALTER TABLE `users` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
@@ -361,4 +389,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2016-12-28 16:01:48
+-- Dump completed on 2017-01-05 22:57:18

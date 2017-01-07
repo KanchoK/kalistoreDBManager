@@ -53,4 +53,12 @@ public class UserManager {
         UserDao userDao = new UserDao();
         return userDao.getUserInfo(userId);
     }
+
+    @POST
+    @Path("facebook")
+    @Consumes(MediaType.APPLICATION_JSON)
+    public Response facebookLogin(User user) throws SQLException {
+        UserDao userDao = new UserDao();
+        return Response.status(HttpURLConnection.HTTP_OK).entity(userDao.facebookLogin(user)).build();
+    }
 }

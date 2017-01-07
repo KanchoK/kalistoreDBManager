@@ -18,6 +18,8 @@ public class User {
     private List<Order> orders;
     private List<Address> addresses;
     private Address mainAddress;
+    private String fbId;
+    private String fbToken;
 
     @XmlElement(name = "id")
     public int getUserId() {
@@ -90,5 +92,21 @@ public class User {
 
     public void setMainAddress(Address mainAddress) {
         this.mainAddress = mainAddress;
+    }
+
+    public String getFbId() {
+        return fbId;
+    }
+
+    public void setFbId(String fbId) {
+        this.fbId = fbId;
+    }
+
+    public String getFbToken() {
+        return fbToken;
+    }
+
+    public void setFbToken(String fbToken) {
+        this.fbToken = fbToken;
     }
 }

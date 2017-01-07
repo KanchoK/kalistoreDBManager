@@ -118,6 +118,48 @@ public class UserDao {
         return user;
     }
 
+    public int facebookLogin(User user) throws SQLException {
+        int userId = 0;
+        ResultSet rs = null;
+
+        try {
+            if (conn.isClosed()) {
+                conn = DbConnection.getConnection();
+            }
+            PreparedStatement checkUser = conn
+                    .prepareStatement("SELECT userId " +
+                            "FROM users " +
+                            "WHERE fbId=?");
+            checkUser.setString(1, user.getFbId());
+            rs = checkUser.getGeneratedKeys();
+            if (rs.next()) {
+                userId = rs.getInt("userId");
+            } else {
+                PreparedStatement createFbUser = conn
+                        .prepareStatement("INSERT INTO users(username, fullName, fbId, fbToken) " +
+                                "VALUES (?, ?, ?, ?)", Statement.RETURN_GENERATED_KEYS);
+                createFbUser.setString(1, user.getUsername());
+                createFbUser.setString(2, user.getFullName());
+                createFbUser.setString(3, user.getFbId());
+                createFbUser.setString(4, user.getFbToken());
+                createFbUser.executeUpdate();
+
+                rs = createFbUser.getGeneratedKeys();
+                rs.next();
+                userId = rs.getInt(1);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            if (rs != null) {
+                rs.close();
+            }
+            DbConnection.closeConnection();
+        }
+
+        return userId;
+    }
+
     private Address findMainAddressForUser(int userId, ResultSet rs) throws SQLException {
         PreparedStatement preparedStatement = conn
                 .prepareStatement("SELECT addressId, cityId, addressLine " +

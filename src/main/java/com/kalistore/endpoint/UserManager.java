@@ -30,7 +30,7 @@ public class UserManager {
         UserDao userDao = new UserDao();
         user.setPassword(SecurityUtils.getHashedPassword(user.getPassword()));
         userDao.addUser(user);
-        return Response.status(HttpURLConnection.HTTP_OK).entity("User added.").build();
+        return Response.status(HttpURLConnection.HTTP_OK).build();
     }
 
     @POST

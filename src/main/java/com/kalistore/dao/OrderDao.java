@@ -73,7 +73,7 @@ public class OrderDao {
                     } else {
                         PreparedStatement createAddress = conn
                                 .prepareStatement("INSERT INTO addresses(cityId, zipCode, addressLine, userId, mainAddress) " +
-                                        "VALUES (?, ?, ?, ?, ?, 0)", Statement.RETURN_GENERATED_KEYS);
+                                        "VALUES (?, ?, ?, ?, 0)", Statement.RETURN_GENERATED_KEYS);
                         createAddress.setInt(1, delivery.getAddress().getCity().getCityId());
                         createAddress.setInt(2, delivery.getAddress().getZipCode());
                         createAddress.setString(3, delivery.getAddress().getAddressLine());

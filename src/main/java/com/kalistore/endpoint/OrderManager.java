@@ -20,16 +20,16 @@ public class OrderManager {
     @POST
     @Path("create")
     @Consumes(MediaType.APPLICATION_JSON)
-    public Response registerUser(Order order) throws SQLException {
+    public Response createOrder(Order order) throws SQLException {
         OrderDao orderDao = new OrderDao();
         orderDao.createOrder(order);
-        return Response.status(HttpURLConnection.HTTP_OK).entity("Order created.").build();
+        return Response.status(HttpURLConnection.HTTP_OK).build();
     }
 
     @GET
     @Path("allForUser")
     @Produces(MediaType.APPLICATION_JSON)
-    public List<Order> registerUser(@QueryParam("userId") int userId) throws SQLException {
+    public List<Order> findOrdersForUser(@QueryParam("userId") int userId) throws SQLException {
         OrderDao orderDao = new OrderDao();
         return orderDao.findOrdersForUser(userId);
     }

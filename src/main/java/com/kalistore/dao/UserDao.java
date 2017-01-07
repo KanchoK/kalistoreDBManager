@@ -131,7 +131,6 @@ public class UserDao {
                             "FROM users " +
                             "WHERE fbId=?");
             checkUser.setString(1, user.getFbId());
-            rs = checkUser.getGeneratedKeys();
             if (rs.next()) {
                 userId = rs.getInt("userId");
             } else {

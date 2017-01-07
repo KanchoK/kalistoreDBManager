@@ -90,8 +90,22 @@ public class OrderDao {
                                     "WHERE userId=? AND mainAddress=1");
                     mainAddress.setInt(1, user.getUserId());
                     rs = mainAddress.executeQuery();
-                    rs.next();
-                    deliveryAddressId = rs.getInt("addressId");
+                    if (rs.next()) {
+                        deliveryAddressId = rs.getInt("addressId");
+                    } else {
+                        PreparedStatement createMainAddress = conn
+                                .prepareStatement("INSERT INTO addresses(cityId, zipCode, addressLine, userId, mainAddress) " +
+                                        "VALUES (?, ?, ?, ?, 1)", Statement.RETURN_GENERATED_KEYS);
+                        createMainAddress.setInt(1, user.getMainAddress().getCity().getCityId());
+                        createMainAddress.setInt(2, user.getMainAddress().getZipCode());
+                        createMainAddress.setString(3, user.getMainAddress().getAddressLine());
+                        createMainAddress.setInt(4, user.getUserId());
+                        createMainAddress.executeUpdate();
+
+                        rs = createMainAddress.getGeneratedKeys();
+                        rs.next();
+                        deliveryAddressId = rs.getInt(1);
+                    }
                 }
             }
 

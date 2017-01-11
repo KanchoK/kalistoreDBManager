@@ -2,6 +2,7 @@ package com.kalistore.endpoint;
 
 import com.kalistore.dao.CatalogDao;
 import com.kalistore.model.Product;
+import com.kalistore.rmi.RMIEngine;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.GET;
@@ -10,6 +11,8 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
+import java.rmi.NotBoundException;
+import java.rmi.RemoteException;
 import java.sql.SQLException;
 import java.util.List;
 
@@ -59,5 +62,13 @@ public class CatalogManager {
     public List<Product> getProductsByQuery(@QueryParam("categoryId") int categoryId) throws SQLException {
         CatalogDao catalogDao = new CatalogDao();
         return catalogDao.findProductsByCategory(categoryId);
+    }
+
+    @GET
+    @Path("productRecommendationsByRating")
+    @Produces(MediaType.APPLICATION_JSON + ";charset=UTF-8")
+    public List<Product> getProductRecommendationsByRating() throws SQLException, RemoteException, NotBoundException {
+        RMIEngine rmiEngine = new RMIEngine();
+        return rmiEngine.getSuggestionsByRating();
     }
 }

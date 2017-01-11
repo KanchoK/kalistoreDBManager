@@ -3,13 +3,14 @@ package com.kalistore.model;
 import javax.persistence.*;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
+import java.io.Serializable;
 import java.util.List;
 
 /**
  * Created by kanch on 12/12/2016.
  */
 @XmlRootElement
-public class Category {
+public class Category implements Serializable {
     private int categoryId;
     private String name;
 //    private List<Product> products;

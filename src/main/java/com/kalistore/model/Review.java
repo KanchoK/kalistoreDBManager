@@ -2,13 +2,14 @@ package com.kalistore.model;
 
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
+import java.io.Serializable;
 import java.util.Date;
 
 /**
  * Created by kanch on 1/5/2017.
  */
 @XmlRootElement
-public class Review {
+public class Review implements Serializable {
     private int reviewId;
     private Product product;
     private User user;

@@ -132,37 +132,20 @@ public class ReviewDao {
         ResultSet rs = null;
 
         try {
-            double newRating;
-
             PreparedStatement countReviews = conn
-                    .prepareStatement("SELECT COUNT(reviewId) as reviewsCount FROM reviews WHERE productId=?;");
+                    .prepareStatement("SELECT COUNT(reviewId)as reviewsCount, SUM(rating) as ratingsSum FROM reviews WHERE productId=?;");
             countReviews.setInt(1, productId);
             rs = countReviews.executeQuery();
             if (rs.next() && rs.getInt("reviewsCount") > 0) {
                 int reviewsCount = rs.getInt("reviewsCount");
-                double oldRating;
+                double ratingsSum = rs.getDouble("ratingsSum");
 
-                PreparedStatement getOldRating = conn
-                        .prepareStatement("SELECT rating " +
-                                "FROM products " +
-                                "WHERE productId=?");
-                getOldRating.setInt(1, productId);
-                rs = getOldRating.executeQuery();
-                if (rs.next()) {
-                    oldRating = rs.getDouble("rating");
-                } else {
-                    oldRating = 0;
-                }
-                newRating = (oldRating + rating) / (reviewsCount);
-            } else {
-                newRating = rating;
+                PreparedStatement updateRating = conn
+                        .prepareStatement("UPDATE products SET rating=? WHERE productId=?");
+                updateRating.setDouble(1, ratingsSum / reviewsCount);
+                updateRating.setInt(2, productId);
+                updateRating.executeUpdate();
             }
-
-            PreparedStatement updateRating = conn
-                    .prepareStatement("UPDATE products SET rating=? WHERE productId=?");
-            updateRating.setDouble(1, newRating);
-            updateRating.setInt(2, productId);
-            updateRating.executeUpdate();
         } catch (SQLException e) {
             e.printStackTrace();
         } finally {

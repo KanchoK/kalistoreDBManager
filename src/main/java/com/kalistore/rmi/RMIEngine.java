@@ -18,7 +18,7 @@ public class RMIEngine {
 
     private Stub stub;
 
-    private static final String HOST = "192.168.0.102";
+    private static final String HOST = "192.168.19.156";
 
     public RMIEngine() throws RemoteException, NotBoundException {
         Registry registry = LocateRegistry.getRegistry(HOST, 8123);
@@ -26,7 +26,7 @@ public class RMIEngine {
     }
     public List<Product> getSuggestionsForProduct(Product product) throws SQLException, RemoteException {
         CatalogDao catalogDao = new CatalogDao();
-        return stub.getSuggestionsForProduct(catalogDao.getAllProducts(),product);
+        return stub.getSuggestionsForProduct(catalogDao.getAllProducts(), product);
     }
     public List<Product> getSuggestionForOrders(User user) throws RemoteException {
         return stub.getSuggestionsForUser(user.getOrders());

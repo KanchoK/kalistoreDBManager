@@ -5,10 +5,7 @@ import com.kalistore.model.Product;
 import com.kalistore.rmi.RMIEngine;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.ws.rs.GET;
-import javax.ws.rs.Path;
-import javax.ws.rs.Produces;
-import javax.ws.rs.QueryParam;
+import javax.ws.rs.*;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import java.rmi.NotBoundException;
@@ -70,5 +67,15 @@ public class CatalogManager {
     public List<Product> getProductRecommendationsByRating() throws SQLException, RemoteException, NotBoundException {
         RMIEngine rmiEngine = new RMIEngine();
         return rmiEngine.getSuggestionsByRating();
+    }
+
+    @GET
+    @Path("productRecommendationsByProduct")
+    @Produces(MediaType.APPLICATION_JSON + ";charset=UTF-8")
+    public List<Product> getProductRecommendationsByProduct(@QueryParam("productId") int productId) throws SQLException, RemoteException, NotBoundException {
+        CatalogDao catalogDao = new CatalogDao();
+        Product product = catalogDao.findProductById(productId);
+        RMIEngine rmiEngine = new RMIEngine();
+        return rmiEngine.getSuggestionsForProduct(product);
     }
 }

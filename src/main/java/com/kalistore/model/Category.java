@@ -39,4 +39,23 @@ public class Category implements Serializable {
 //    public void setProducts(List<Product> products) {
 //        this.products = products;
 //    }
+
+
+    @Override
+    public int hashCode() {
+        int hash = 9;
+        hash = 17 * hash + (this.categoryId != 0 ? this.hashCode() : 0);
+        return hash;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        boolean val = false;
+
+        if (obj instanceof Category) {
+            val = this.getCategoryId() == ((Category) obj).getCategoryId();
+        }
+
+        return val;
+    }
 }
